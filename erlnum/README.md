@@ -11,14 +11,14 @@ For those occasions where Erlang is just printing a list of numbers when you rea
 ## Example
 
 ```
-$ cat input.txt
+$ cat testdata/input.txt
 72,101,108,108,111,10
 87,111,114,108,100,10
 
-$ cat input.txt | erlnum
+$ cat testdata/input.txt | erlnum
 Hello.World.
 
-$ cat input.txt | erlnum -x
+$ cat testdata/input.txt | erlnum -x
 00000000  48 65 6c 6c 6f 0a 57 6f 72 6c 64 0a    |Hello.World.|
 ```
 
