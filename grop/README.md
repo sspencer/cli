@@ -26,3 +26,8 @@ json.two.foo = "baz";
 ```
 
 Note: In the example above, it is safer to specify the key as ".foo" in cases where "foo" may appear in the value.
+
+## TBD
+
+1. only search left hand of express for pattern
+2. allow negative pattern match (`!source` or `-source` to find objects with a source key)

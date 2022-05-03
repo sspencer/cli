@@ -38,27 +38,52 @@ func run(r io.Reader, w io.Writer, pattern string) {
 	var lines = bufio.NewScanner(r)
 	var sb strings.Builder
 	hasPattern := false
+	negativePattern := pattern[0] == '!' || pattern[0] == '^' || pattern[0] == '-' || pattern[0] == '~'
+	if negativePattern {
+		pattern = pattern[1:]
+	}
+
 	lines.Split(bufio.ScanLines)
+	num := 0
 	for lines.Scan() {
 		line := lines.Text()
 		if strings.HasSuffix(line, "= {};") {
-			if hasPattern {
-				_, _ = fmt.Fprintf(w, "%s", sb.String())
+			if num > 1 {
+				if (!negativePattern && hasPattern) || (negativePattern && !hasPattern) {
+					_, _ = fmt.Fprintf(w, "%s", sb.String())
+				}
 			}
+
 			sb.Reset()
+			num = 0
 			hasPattern = false
 		}
 
 		sb.WriteString(line)
 		sb.WriteString("\n")
+		num++
 
-		if strings.Contains(line, pattern) {
+		// grab last part of key path
+		// "json["pushid"].source = 123;" -> "source
+		equals := strings.Index(line, " = ")
+		dot := strings.LastIndex(line[:equals], ".")
+		if equals == -1 || dot == -1 {
+			continue
+		}
+
+		if strings.Contains(line[dot+1:equals], pattern) {
 			hasPattern = true
 		}
 	}
 
-	if hasPattern {
-		_, _ = fmt.Fprintf(w, "%s", sb.String())
+	if num > 1 {
+		if (!negativePattern && hasPattern) || (negativePattern && !hasPattern) {
+			_, _ = fmt.Fprintf(w, "%s", sb.String())
+		}
+
+		if negativePattern && !hasPattern {
+			_, _ = fmt.Fprintf(w, "%s", sb.String())
+		}
 	}
 
 }
