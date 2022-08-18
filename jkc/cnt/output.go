@@ -46,7 +46,10 @@ func (c *Counter) PrettyPrint(out io.Writer) {
 		if dirLen > maxDirLen {
 			maxDirLen = dirLen
 		}
-		keys = append(keys, k)
+
+		if c.minCount == 0 || ct.keyCount > c.minCount {
+			keys = append(keys, k)
+		}
 	}
 	sort.Strings(keys)
 

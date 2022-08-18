@@ -17,6 +17,7 @@ type Counter struct {
 	skipPartials []string
 	skipIds      bool
 	counter      counterMap
+	minCount     int
 }
 
 type counterValue struct {
@@ -30,12 +31,13 @@ type counterValue struct {
 
 type counterMap map[string]counterValue
 
-func NewCounter(skipKeys, skipPartials []string, skipIds bool) *Counter {
+func NewCounter(skipKeys, skipPartials []string, skipIds bool, minCount int) *Counter {
 	return &Counter{
 		skipKeys:     skipKeys,
 		skipPartials: skipPartials,
 		skipIds:      skipIds,
 		counter:      make(counterMap),
+		minCount:     minCount,
 	}
 }
 
@@ -153,8 +155,10 @@ func (c *Counter) countFile(filePath string) error {
 }
 
 // remove array subscripts
-//     FROM: pets.1.name
-//       TO: pets.name
+//
+//	FROM: pets.1.name
+//	  TO: pets.name
+//
 // while skipping over "skip keys" (returns "")
 func (c *Counter) normalizeKeyPath(keyPath string) string {
 	keys := strings.Split(keyPath, ".")
@@ -211,7 +215,6 @@ func looksLikeId(key string) bool {
 // splitSlice splits a slice in `numberOfChunks` slices.
 //
 // Based on this gist: https://gist.github.com/siscia/988bf4523918345a6a8285b32e685e03
-//
 func splitSlice(array []string, numberOfChunks int) [][]string {
 	if len(array) == 0 {
 		return nil

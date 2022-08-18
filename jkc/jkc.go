@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sspencer/jkc/cnt"
+	"github.com/sspencer/cli/jkc/cnt"
 )
 
 type arrayFlags []string
@@ -35,6 +35,7 @@ func main() {
 	skipIds := flag.Bool("i", false, "skip keys that looks like push ids or uuids")
 	csvOut := flag.Bool("csv", false, "output in CSV format")
 	tsvOut := flag.Bool("tsv", false, "output in TSV format")
+	minCnt := flag.Int("min", 0, "skip keys with too few items")
 
 	flag.Usage = func() {
 		w := flag.CommandLine.Output() // may be os.Stderr - but not necessarily
@@ -56,7 +57,7 @@ func main() {
 		panic(err)
 	}
 
-	counter := cnt.NewCounter(skipKeys, skipPartials, *skipIds)
+	counter := cnt.NewCounter(skipKeys, skipPartials, *skipIds, *minCnt)
 	var allFiles []string
 
 	// read multiple directories from input args

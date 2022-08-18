@@ -6,7 +6,6 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/Jeffail/gabs/v2 v2.6.1
 	github.com/pkg/errors v0.9.1
-	github.com/sspencer/jkc v0.0.0-20220312004059-920262dd2242
 	google.golang.org/api v0.40.0
 )
 
