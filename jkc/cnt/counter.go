@@ -203,6 +203,8 @@ func looksLikeId(key string) bool {
 	if n == 28 ||
 		strings.HasPrefix(key, "-") ||
 		strings.HasPrefix(key, "kpf") ||
+		strings.HasPrefix(key, "KPF") ||
+		strings.HasSuffix(key, "TestDoc") ||
 		strings.HasPrefix(key, "_test") {
 		return true
 	} else if n == 36 && strings.Contains(key, "-") {
