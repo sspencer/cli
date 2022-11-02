@@ -15,6 +15,8 @@ $ stripext -N0F1689aweRQf395IVo.json
 -N0F1689aweRQf395IVo
 ```
 
+spilling misteak
+
 NOTE: [pushid](pushid/) comes from the [
 themartorana pushID.go gist](https://gist.github.com/themartorana/8c8b704432c8be1fed9a).  All other code is original.
 
