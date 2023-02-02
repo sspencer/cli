@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
+	"sort"
 	"time"
 )
 
@@ -13,6 +14,7 @@ type config struct {
 	minElements int
 	maxElements int
 	lines       int
+	sort        bool
 }
 
 func main() {
@@ -29,6 +31,7 @@ func main() {
 	flag.IntVar(&cfg.minElements, "minE", 1, "minimum number of elements per line")
 	flag.IntVar(&cfg.maxElements, "maxE", 10, "maximum value of elements per line")
 	flag.IntVar(&cfg.lines, "lines", 20, "number of lines output")
+	flag.BoolVar(&cfg.sort, "sort", false, "sort each line")
 
 	flag.Parse()
 
@@ -44,14 +47,40 @@ func main() {
 	r1 := rand.New(s1)
 
 	for i := 0; i < cfg.lines; i++ {
-		elements := r1.Intn(cfg.maxElements-cfg.minElements+1) + cfg.minElements
-		for j := 0; j < elements; j++ {
-			val := r1.Intn(cfg.maxNum-cfg.minNum+1) + cfg.minNum
-			if j < elements-1 {
-				fmt.Printf("%d ", val)
+		nums := randNums(r1, cfg)
+		for j, v := range nums {
+			if j < len(nums)-1 {
+				fmt.Printf("%d ", v)
 			} else {
-				fmt.Printf("%d\n", val)
+				fmt.Printf("%d\n", v)
 			}
 		}
 	}
+}
+
+func getKeys[M ~map[K]V, K comparable, V any](m M) []K {
+	r := make([]K, 0, len(m))
+	for k := range m {
+		r = append(r, k)
+	}
+	return r
+}
+
+func randNums(r1 *rand.Rand, cfg config) []int {
+	numElements := r1.Intn(cfg.maxElements-cfg.minElements+1) + cfg.minElements
+	keys := make(map[int]bool)
+
+	// iterate twice just in case there are dups
+	for i := 0; i < numElements*2; i++ {
+		val := r1.Intn(cfg.maxNum-cfg.minNum+1) + cfg.minNum
+		keys[val] = true
+	}
+
+	nums := getKeys(keys)
+
+	if cfg.sort {
+		sort.Ints(nums)
+	}
+
+	return nums
 }
