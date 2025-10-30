@@ -26,12 +26,13 @@ type config struct {
 	dbg    bool
 	max    int
 	min    int
+	sep    string
 }
 
 func main() {
 	flag.Usage = func() {
 		w := flag.CommandLine.Output()
-		fmt.Fprintln(w, "Print specified column from STDIN or filename")
+		fmt.Fprintln(w, "Print specified (space separated) column from STDIN or filename")
 		fmt.Fprintln(w, "USAGE: coln 3 filename.txt  # prints third column (1 based index)")
 		fmt.Fprintln(w, "USAGE: coln 0 filename.txt  # prints last column")
 		flag.PrintDefaults()
@@ -42,6 +43,7 @@ func main() {
 	min := flag.Int("min", -1, "Filter all strings with less than (n) chars")
 	dbg := flag.Bool("d", false, "Debug first line of text")
 	trim := flag.Bool("q", false, "Trim quotes")
+	sep := flag.String("s", "", "Specify separator (space by default)")
 
 	flag.Parse()
 
@@ -62,6 +64,7 @@ func main() {
 		dbg:    *dbg,
 		max:    *max,
 		min:    *min,
+		sep:    *sep,
 	}
 
 	var r io.Reader

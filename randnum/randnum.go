@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -15,6 +17,30 @@ type config struct {
 	maxElements int
 	lines       int
 	sort        bool
+}
+
+type numbers []int
+
+func (nums numbers) String() string {
+	var sb strings.Builder
+	for i, v := range nums {
+		sb.WriteString(strconv.Itoa(v))
+		if i < len(nums)-1 {
+			sb.WriteString(" ")
+		}
+	}
+
+	return sb.String()
+}
+
+func (num numbers) hasDuplicate(val int) bool {
+	for _, n := range num {
+		if val == n {
+			return true
+		}
+	}
+
+	return false
 }
 
 func main() {
@@ -47,36 +73,25 @@ func main() {
 	r1 := rand.New(s1)
 
 	for i := 0; i < cfg.lines; i++ {
-		nums := randNums(r1, cfg)
-		for j, v := range nums {
-			if j < len(nums)-1 {
-				fmt.Printf("%d ", v)
-			} else {
-				fmt.Printf("%d\n", v)
+		fmt.Println(randNums(r1, cfg))
+	}
+}
+
+func randNums(r1 *rand.Rand, cfg config) numbers {
+	numElements := r1.Intn(cfg.maxElements-cfg.minElements+1) + cfg.minElements
+	var nums numbers
+
+	for i := 0; i < numElements; i++ {
+		// try a few rand vals just in case there's a dup
+		for j := 0; j < 5; j++ {
+			val := r1.Intn(cfg.maxNum-cfg.minNum+1) + cfg.minNum
+			if nums.hasDuplicate(val) {
+				continue
 			}
+			nums = append(nums, val)
+			break
 		}
 	}
-}
-
-func getKeys[M ~map[K]V, K comparable, V any](m M) []K {
-	r := make([]K, 0, len(m))
-	for k := range m {
-		r = append(r, k)
-	}
-	return r
-}
-
-func randNums(r1 *rand.Rand, cfg config) []int {
-	numElements := r1.Intn(cfg.maxElements-cfg.minElements+1) + cfg.minElements
-	keys := make(map[int]bool)
-
-	// iterate twice just in case there are dups
-	for i := 0; i < numElements*2; i++ {
-		val := r1.Intn(cfg.maxNum-cfg.minNum+1) + cfg.minNum
-		keys[val] = true
-	}
-
-	nums := getKeys(keys)
 
 	if cfg.sort {
 		sort.Ints(nums)
