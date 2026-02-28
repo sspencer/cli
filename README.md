@@ -15,8 +15,6 @@ $ stripext -N0F1689aweRQf395IVo.json
 -N0F1689aweRQf395IVo
 ```
 
-spilling misteak
-
 NOTE: [pushid](pushid/) comes from the [
 themartorana pushID.go gist](https://gist.github.com/themartorana/8c8b704432c8be1fed9a).  All other code is original.
 
@@ -25,6 +23,7 @@ themartorana pushID.go gist](https://gist.github.com/themartorana/8c8b704432c8be
 * [erlnum](erlnum/): covert Erlang list of numbers to ascii
 * [fire](fire/): retrieve firebase data
 * [grop](grop/): filter objects from [gron](https://github.com/tomnomnom/gron) output
+* [humandid](humanid/): generate human readable ids
 * [jkc](jkc/): count json keys in multiple files
 * [lower](lower/): convert to lower case
 * [pushid](pushid/): generate unique id
@@ -41,6 +40,7 @@ cd coln && go install
 cd erlnum && go install
 cd fire && go install
 cd group && go install
+cd humandid && go install
 cd jkc && go install
 cd lower && go install
 cd pushid && go install
