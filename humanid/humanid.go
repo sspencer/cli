@@ -161,7 +161,8 @@ func loadWords(fs embed.FS, filename string) []string {
 		if strings.Contains(word, " ") {
 			continue
 		}
-		words = append(words, word)
+
+		words = append(words, strings.TrimSpace(word))
 	}
 
 	return words
