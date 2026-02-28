@@ -76,7 +76,7 @@ func (c *Counter) multiCountFiles(jsonFiles []string) {
 	var counters []*Counter
 
 	wg := sync.WaitGroup{}
-	for i := 0; i < cpus; i++ {
+	for i := range cpus {
 		counters = append(counters, partialCounter(c))
 		wg.Add(1)
 		go func(files []string, m *Counter) {
@@ -90,7 +90,7 @@ func (c *Counter) multiCountFiles(jsonFiles []string) {
 	}
 	wg.Wait()
 
-	for i := 0; i < cpus; i++ {
+	for i := range cpus {
 		c.merge(counters[i])
 	}
 }
@@ -225,13 +225,13 @@ func splitSlice(array []string, numberOfChunks int) [][]string {
 	result := make([][]string, numberOfChunks)
 
 	if numberOfChunks > len(array) {
-		for i := 0; i < len(array); i++ {
+		for i := range array {
 			result[i] = []string{array[i]}
 		}
 		return result
 	}
 
-	for i := 0; i < numberOfChunks; i++ {
+	for i := range numberOfChunks {
 
 		min := i * len(array) / numberOfChunks
 		max := ((i + 1) * len(array)) / numberOfChunks

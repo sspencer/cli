@@ -52,7 +52,7 @@ func generatePushID() string {
 	id := strings.Join(timeStampChars, "")
 
 	if !duplicateTime {
-		for i := 0; i < 12; i++ {
+		for i := range 12 {
 			lastRandChars[i] = int8(math.Floor(rand.Float64() * 64.0))
 		}
 	} else {
@@ -64,7 +64,7 @@ func generatePushID() string {
 		lastRandChars[i]++
 	}
 
-	for i := 0; i < 12; i++ {
+	for i := range 12 {
 		id = fmt.Sprintf("%s%s", id, string(PUSH_CHARS[lastRandChars[i]]))
 	}
 

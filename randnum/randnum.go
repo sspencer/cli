@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -34,13 +35,7 @@ func (nums numbers) String() string {
 }
 
 func (num numbers) hasDuplicate(val int) bool {
-	for _, n := range num {
-		if val == n {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(num, val)
 }
 
 func main() {
@@ -81,9 +76,9 @@ func randNums(r1 *rand.Rand, cfg config) numbers {
 	numElements := r1.Intn(cfg.maxElements-cfg.minElements+1) + cfg.minElements
 	var nums numbers
 
-	for i := 0; i < numElements; i++ {
+	for range numElements {
 		// try a few rand vals just in case there's a dup
-		for j := 0; j < 5; j++ {
+		for range 5 {
 			val := r1.Intn(cfg.maxNum-cfg.minNum+1) + cfg.minNum
 			if nums.hasDuplicate(val) {
 				continue

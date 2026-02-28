@@ -108,7 +108,7 @@ func keyFetch(ctx context.Context, ref *db.Ref, cmd cmdParams) (string, error) {
 }
 
 func shallowFetch(ctx context.Context, ref *db.Ref, cmd cmdParams) (string, error) {
-	var data interface{}
+	var data any
 	if err := ref.GetShallow(ctx, &data); err != nil {
 		return "", errors.Wrap(err, "Error reading from database")
 	}
@@ -117,7 +117,7 @@ func shallowFetch(ctx context.Context, ref *db.Ref, cmd cmdParams) (string, erro
 }
 
 func deepFetch(ctx context.Context, ref *db.Ref, cmd cmdParams) (string, error) {
-	var data interface{}
+	var data any
 	if err := ref.Get(ctx, &data); err != nil {
 		return "", errors.Wrap(err, "Error reading from database")
 	}
@@ -125,7 +125,7 @@ func deepFetch(ctx context.Context, ref *db.Ref, cmd cmdParams) (string, error) 
 	return jsonPrettyPrint(data, cmd.pretty)
 }
 
-func jsonPrettyPrint(data interface{}, prettyPrint bool) (string, error) {
+func jsonPrettyPrint(data any, prettyPrint bool) (string, error) {
 	buf, err := json.Marshal(data)
 	if err != nil {
 		return "", errors.Wrap(err, "Error marshalling data")

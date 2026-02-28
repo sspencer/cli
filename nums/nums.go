@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -29,9 +30,9 @@ func main() {
 
 	// Read all input
 	scanner := bufio.NewScanner(reader)
-	var text string
+	var text strings.Builder
 	for scanner.Scan() {
-		text += scanner.Text() + " "
+		text.WriteString(scanner.Text() + " ")
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -41,7 +42,7 @@ func main() {
 
 	// Extract all positive integers using regex
 	re := regexp.MustCompile(`\d+`)
-	matches := re.FindAllString(text, -1)
+	matches := re.FindAllString(text.String(), -1)
 
 	// Convert to integers and filter valid positive integers
 	var numbers []int

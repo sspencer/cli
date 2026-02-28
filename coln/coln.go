@@ -167,7 +167,11 @@ func scanOptionallyQuotedWords(data []byte, atEOF bool) (advance int, token []by
 		var r rune
 		r, width = utf8.DecodeRune(data[i:])
 
-		if i == 0 && isQuote(r) {
+		if !hasQuote && isSpace(r) {
+			return i + width, data[start:i], nil
+		}
+
+		if i == start && isQuote(r) {
 			// skip leading quote
 			hasQuote = true
 			continue
@@ -175,9 +179,6 @@ func scanOptionallyQuotedWords(data []byte, atEOF bool) (advance int, token []by
 
 		if hasQuote && isQuote(r) {
 			return i + width, data[start+1 : i], nil
-		} else if !hasQuote && isSpace(r) {
-			return i + width, data[start:i], nil
-
 		}
 	}
 	// If we're at EOF, we have a final, non-empty, non-terminated word. Return it.
