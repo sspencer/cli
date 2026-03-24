@@ -1,6 +1,7 @@
 package sumslib
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -39,10 +40,47 @@ func findCombinations(target int, available []int, current []int, results *[][]i
 	}
 }
 
+// FindCombinationsConv is a string-input wrapper around FindCombinations that
+// validates the target and parses include/exclude comma-separated number lists.
+func FindCombinationsConv(w io.Writer, targetStr, include, exclude string) error {
+	target, err := strconv.Atoi(targetStr)
+	if err != nil {
+		return fmt.Errorf("invalid number %q", targetStr)
+	}
+
+	if target < 6 || target > 24 {
+		return errors.New("number must be between 6 and 24 (inclusive)")
+	}
+
+	includeNums, err := parseOptionalList(include, "include")
+	if err != nil {
+		return err
+	}
+
+	excludeNums, err := parseOptionalList(exclude, "exclude")
+	if err != nil {
+		return err
+	}
+
+	FindCombinations(w, target, includeNums, excludeNums)
+	return nil
+}
+
+func parseOptionalList(s, name string) ([]int, error) {
+	if s == "" {
+		return nil, nil
+	}
+	nums, err := ParseNumList(s)
+	if err != nil {
+		return nil, fmt.Errorf("invalid %s number %q", name, err)
+	}
+	return nums, nil
+}
+
 // FindCombinations finds all 3-number combinations from 1-9 that sum to target,
 // optionally excluding numbers in exclude and requiring at least one number from include.
 // Results are written to w. Inputs are assumed to be already validated.
-func FindCombinations(w io.Writer, target int, include []int, exclude []int) {
+func FindCombinations(w io.Writer, target int, include, exclude []int) {
 	available := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
 	if len(exclude) > 0 {

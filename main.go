@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/sspencer/cli/internal/sumslib"
@@ -82,35 +81,13 @@ func sumsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	targetStr := r.PathValue("target")
-	target, err := strconv.Atoi(targetStr)
+	includeStr := r.URL.Query().Get("i")
+	excludeStr := r.URL.Query().Get("x")
+	err := sumslib.FindCombinationsConv(w, targetStr, includeStr, excludeStr)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Error: invalid number %q", targetStr), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Error: %s", err), http.StatusBadRequest)
 		return
 	}
-	if target < 6 || target > 24 {
-		http.Error(w, "Error: number must be between 6 and 24 (inclusive)", http.StatusBadRequest)
-		return
-	}
-
-	var excludeNums []int
-	if x := r.URL.Query().Get("x"); x != "" {
-		var err error
-		if excludeNums, err = sumslib.ParseNumList(x); err != nil {
-			http.Error(w, fmt.Sprintf("Error: invalid exclusion number %q", err), http.StatusBadRequest)
-			return
-		}
-	}
-
-	var includeNums []int
-	if inc := r.URL.Query().Get("i"); inc != "" {
-		var err error
-		if includeNums, err = sumslib.ParseNumList(inc); err != nil {
-			http.Error(w, fmt.Sprintf("Error: invalid include number %q", err), http.StatusBadRequest)
-			return
-		}
-	}
-
-	sumslib.FindCombinations(w, target, includeNums, excludeNums)
 }
 
 func main() {
