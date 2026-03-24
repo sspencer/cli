@@ -1,6 +1,6 @@
 module github.com/sspencer/cli
 
-go 1.26
+go 1.26.1
 
 require (
 	firebase.google.com/go v3.13.0+incompatible
